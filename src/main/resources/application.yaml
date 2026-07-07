@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: DataBaseWork
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: bogdan
+    password: 28085678
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
+      data-locations: classpath:sql/data.sql
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+external-api:
+  base-url: https://jsonplaceholder.typicode.com
