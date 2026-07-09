@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
+import java.time.Instant;
 import java.util.List;
 
 @Primary
@@ -52,17 +53,21 @@ public class TodoJdbcService implements TodoService {
             String sql = """
                     
                         INSERT INTO TODO_ENTITY
-                    (USER_ID, TITLE, COMPLETED)
-                    VALUES (?, ?, ?)
+                    (CREATED_AT, UPDATED_AT, TEXT, STATUS, IS_VISIBLE, AUTHOR)
+                    VALUES (?, ?, ?, ?, ?, ?)
                     
                     """;
             jdbcTemplate.update(
                     sql,
-                    newTodo.userId,
+                    Instant.now(),
+                    Instant.now(),
                     newTodo.title,
-                    newTodo.
+                    newTodo.completed,
+                    true,
+                    "Bogdan"
 
-                            completed
+
+
             );
 
             return ResponseEntity.ok("Ваша todoshка добавлена");
@@ -99,17 +104,22 @@ public class TodoJdbcService implements TodoService {
         if (role == Role.ADMIN) {
             String sql = """
                     UPDATE TODO_ENTITY
-                    SET USER_ID = ?,
-                        TITLE = ?,
-                        COMPLETED = ?
+                    SET UPDATED_AT = ?,
+                        TEXT = ?,
+                        STATUS = ?,
+                        IS_VISIBLE = ?,
+                        AUTHOR = ?
                     WHERE ID = ?
                     """;
             jdbcTemplate.update(
                     sql,
-                    updateData.userId,
+                    Instant.now(),
                     updateData.title,
                     updateData.completed,
+                    true,
+                    "BOGDAN",
                     id
+
             );
             return ResponseEntity.ok("Обновлено todo с id: " + id);
         }

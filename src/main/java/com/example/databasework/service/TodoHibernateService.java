@@ -4,7 +4,7 @@ import com.example.databasework.Role;
 import com.example.databasework.dto.MainDto;
 import com.example.databasework.entity.TodoEntity;
 import com.example.databasework.repository.TodoRepository;
-
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -62,9 +62,13 @@ public class TodoHibernateService implements TodoService{
 
         for (MainDto dto : response) {
             TodoEntity entity = new TodoEntity();
-            entity.setUserId(dto.userId);
-            entity.setTitle(dto.title);
-            entity.setCompleted(dto.completed);
+            entity.setCreated_at(Instant.now());
+            entity.setUpdated_at(Instant.now());
+            entity.setText(dto.title);
+            entity.setStatus(dto.completed);
+            entity.setIs_visible(true);
+            entity.setAuthor("Bogdan");
+
 
             todoRepository.save(entity);
         }
@@ -102,15 +106,20 @@ public class TodoHibernateService implements TodoService{
 
         if (role == Role.ADMIN) {
             System.out.println(baseUrl);
+            System.out.println("Отправляем запрос во внешний сервис");
             MainDto created = restTemplate.postForObject(
                     baseUrl + "/todos",
                     newTodo,
                     MainDto.class);
+            System.out.println("Получили ответ");
             TodoEntity entity = new TodoEntity();
             entity.setId(created.id);
-            entity.setUserId(created.userId);
-            entity.setTitle(created.title);
-            entity.setCompleted(created.completed);
+            entity.setCreated_at(Instant.now());
+            entity.setUpdated_at(Instant.now());
+            entity.setText(created.title);
+            entity.setStatus(created.completed);
+            entity.setIs_visible(true);
+            entity.setAuthor("Bogdan");
 
             todoRepository.save(entity);
 
@@ -144,10 +153,13 @@ public class TodoHibernateService implements TodoService{
         );
 
         TodoEntity entity = new TodoEntity();
-        entity.setId(id); // Оставляем тот ID, который пришел в запросе
-        entity.setUserId(updatedFromExternal.userId);
-        entity.setTitle(updatedFromExternal.title);
-        entity.setCompleted(updatedFromExternal.completed);
+        entity.setId(id);
+        entity.setCreated_at(Instant.now());
+        entity.setUpdated_at(Instant.now());
+        entity.setText(updatedFromExternal.title);
+        entity.setStatus(updatedFromExternal.completed);
+        entity.setIs_visible(true);
+        entity.setAuthor("Bogdan");
 
 
         todoRepository.save(entity);
