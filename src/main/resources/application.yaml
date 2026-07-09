@@ -8,16 +8,20 @@ spring:
     password: 28085678
     driver-class-name: org.h2.Driver
 
+  flyway:
+    enabled: true
+    locations: classpath:migrations
+
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: false
 
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:sql/schema.sql
-      data-locations: classpath:sql/data.sql
+#  sql:
+#    init:
+#      mode: always
+#      schema-locations: classpath:sql/schema.sql
+#      data-locations: classpath:sql/data.sql
 
   h2:
     console:
