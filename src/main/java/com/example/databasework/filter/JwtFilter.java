@@ -41,8 +41,15 @@ public class JwtFilter {
         Claims claims = extractClaims(token);
 
         String login = claims.getSubject();
+        System.out.println("Login из токена = " + login);
 
         UserEntity user = userRepository.findByLogin(login);
+        System.out.println("User = " + user);
+
+        if (user != null) {
+            System.out.println("DB login = " + user.getLogin());
+            System.out.println("Active = " + user.getIsActive());
+        }
 
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
