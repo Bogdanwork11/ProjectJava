@@ -30,7 +30,7 @@ public class TodoJdbcService implements TodoService {
     public List<TodoEntity> getAllTodos(Role role) {
 
         String sql = """
-                SELECT * FROM TODO_ENTITY
+                SELECT * FROM TODO_VIEW
                 """;
 
         if (role == Role.ADMIN) {
