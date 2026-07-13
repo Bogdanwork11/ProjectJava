@@ -34,7 +34,7 @@ public class TodoEntity {
 
 
 
-    public TodoEntity() {
+    public  TodoEntity() {
     }
 
     public TodoEntity(Integer id, Instant created_at, Instant updated_at, String text, StatusEntity status, Boolean is_visible, AuthorEntity author) {
