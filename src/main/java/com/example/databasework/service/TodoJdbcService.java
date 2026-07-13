@@ -2,10 +2,10 @@ package com.example.databasework.service;
 
 import com.example.databasework.Role;
 import com.example.databasework.dto.MainDto;
-import com.example.databasework.entity.AuthorEntity;
+
 import com.example.databasework.entity.TodoEntity;
-import com.example.databasework.service.TodoRowMapper;
-import com.sun.tools.javac.Main;
+
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -122,9 +122,9 @@ public class TodoJdbcService implements TodoService {
                     sql,
                     Instant.now(),
                     updateData.title,
-                    updateData.completed,
+                    updateData.statusId,
                     true,
-                    "BOGDAN",
+                    updateData.authorId,
                     id
 
             );

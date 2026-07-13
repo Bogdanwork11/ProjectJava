@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.context.event.EventListener;
 
 import java.util.List;
+import java.util.Random;
 
 ///**
 // * todo to read about @Transactional and apply that to all (mb) methods
@@ -72,8 +73,10 @@ public class TodoHibernateService implements TodoService{
                 .body(MainDto[].class);
 
         for (MainDto dto : response) {
+            Random random = new Random();
+            int randomAuthorId = random.nextInt(2) + 1;
             AuthorEntity author = authorRepository
-                    .findById(1)
+                    .findById(randomAuthorId)
                     .orElseThrow();
 
             StatusEntity status = statusRepository
