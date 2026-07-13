@@ -54,16 +54,15 @@ public class  TodoController {
     public ResponseEntity<?> addinTodos(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody MainDto newTodo) {
-        System.out.println("1");
+
         String token = authHeader.replace("Bearer ", "");
-        System.out.println("2");
+
         jwtFilter.validateActiveUser(token);
-        System.out.println("3");
+
         Claims claims = jwtFilter.extractClaims(token);
-        System.out.println("4");
+
         String roleStr = claims.get("role", String.class);
         Role role = Role.fromString(roleStr);
-        System.out.println("5");
 
         return todoService.addinTodos(role, newTodo);
 
