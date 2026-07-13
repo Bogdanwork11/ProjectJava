@@ -11,7 +11,7 @@ public class todoV2Dto {
     private String text;
     private Boolean status;
     private Boolean is_visible;
-    private String author;
+    private Integer author;
 
     public Integer getId() {
         return id;
@@ -37,7 +37,7 @@ public class todoV2Dto {
         return is_visible;
     }
 
-    public String getAuthor() {
+    public Integer getAuthor() {
         return author;
     }
 
@@ -65,7 +65,7 @@ public class todoV2Dto {
         this.is_visible = is_visible;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Integer author) {
         this.author = author;
     }
 }

@@ -7,4 +7,10 @@ public class MainDto {
     public Integer userId;
     public String title;
     public Boolean completed;
+    public Integer authorId;
+    public Integer statusId;
+
+
+
+
 }
