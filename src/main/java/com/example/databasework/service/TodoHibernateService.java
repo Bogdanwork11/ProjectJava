@@ -29,7 +29,7 @@ import java.util.Random;
 // * todo to read about @Transactional and apply that to all (mb) methods
 // */
 
-@Primary
+//@Primary
 @Service
 public class TodoHibernateService implements TodoService{
     private final TodoRepository todoRepository;
@@ -194,5 +194,20 @@ public class TodoHibernateService implements TodoService{
         todoRepository.save(entity);
 
         return ResponseEntity.ok(entity);
+    }
+
+
+    //get author id
+    public List<TodoEntity> getIdTodo(Integer authorId, Role role) {
+        if (role == Role.ADMIN){
+
+            return todoRepository.findByAuthorId(authorId);
+
+        }
+        if (role == Role.USER){
+
+            return todoRepository.findByAuthorId(authorId);
+        }
+        return List.of();
     }
 }

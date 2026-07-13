@@ -21,9 +21,14 @@ public class TodoRowMapper implements RowMapper<TodoEntity> {
         todo.setCreated_at(rs.getTimestamp("Created_at").toInstant());
         todo.setUpdated_at(rs.getTimestamp("Updated_at").toInstant());
         todo.setText(rs.getString("Text"));
-        status.setId(rs.getInt("STATUS_ID"));
         todo.setIs_visible(rs.getBoolean("Is_visible"));
         author.setId(rs.getInt("AUTHOR_ID"));
+        author.setAuthor(rs.getString("AUTHOR_NAME"));
+        status.setId(rs.getInt("STATUS_ID"));
+        status.setStatus(rs.getBoolean("STATUS_NAME"));
+
+        todo.setAuthor(author);
+        todo.setStatus(status);
 
 
 

@@ -16,4 +16,6 @@ public interface TodoService {
     ResponseEntity<?> deleteTodo(Role role, int id);
 
     ResponseEntity<?> updateTodo(Role role, MainDto updateData, int id);
+
+    List<TodoEntity> getIdTodo(Integer authorId, Role role);
 }
