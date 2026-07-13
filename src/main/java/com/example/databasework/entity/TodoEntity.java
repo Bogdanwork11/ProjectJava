@@ -1,7 +1,7 @@
 package com.example.databasework.entity;
 
 import jakarta.persistence.*;
-import org.w3c.dom.Text;
+
 
 import java.time.Instant;
 
@@ -21,20 +21,23 @@ public class TodoEntity {
     @Column(name = "TEXT")
     private String text;
 
-    @Column(name = "STATUS")
-    private Boolean status;
+    @ManyToOne
+    @JoinColumn(name = "STATUS_ID")
+    private StatusEntity status;
 
     @Column(name = "IS_VISIBLE")
     private Boolean is_visible;
 
-    @Column(name = "AUTHOR")
-    private String author;
+    @ManyToOne
+    @JoinColumn(name = "AUTHOR_ID")
+    private AuthorEntity author;
+
 
 
     public TodoEntity() {
     }
 
-    public TodoEntity(Integer id, Instant created_at, Instant updated_at, String text, Boolean status, Boolean is_visible, String author) {
+    public TodoEntity(Integer id, Instant created_at, Instant updated_at, String text, StatusEntity status, Boolean is_visible, AuthorEntity author) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -62,7 +65,7 @@ public class TodoEntity {
         return text;
     }
 
-    public Boolean getStatus() {
+    public StatusEntity getStatus() {
         return status;
     }
 
@@ -70,7 +73,7 @@ public class TodoEntity {
         return is_visible;
     }
 
-    public String getAuthor() {
+    public AuthorEntity getAuthor() {
         return author;
     }
 
@@ -93,7 +96,7 @@ public class TodoEntity {
         this.text = text;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(StatusEntity status) {
         this.status = status;
     }
 
@@ -101,7 +104,7 @@ public class TodoEntity {
         this.is_visible = is_visible;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(AuthorEntity author) {
         this.author = author;
     }
 
