@@ -2,6 +2,7 @@ package com.example.databasework.service;
 
 import com.example.databasework.Role;
 import com.example.databasework.dto.MainDto;
+import com.example.databasework.entity.AuthorEntity;
 import com.example.databasework.entity.TodoEntity;
 import com.example.databasework.service.TodoRowMapper;
 import com.sun.tools.javac.Main;
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 
-@Primary
+//@Primary
 @Service
 public class TodoJdbcService implements TodoService {
 
     private final JdbcTemplate jdbcTemplate;
+
 
 
     public TodoJdbcService(JdbcTemplate jdbcTemplate) {
@@ -53,18 +55,23 @@ public class TodoJdbcService implements TodoService {
             String sql = """
                     
                         INSERT INTO TODO_ENTITY
-                    (CREATED_AT, UPDATED_AT, TEXT, STATUS, IS_VISIBLE, AUTHOR)
+                    (CREATED_AT, UPDATED_AT, TEXT, STATUS_ID, IS_VISIBLE, AUTHOR_ID)
                     VALUES (?, ?, ?, ?, ?, ?)
                     
                     """;
+//            System.out.println(newTodo.statusId + "Это statusId");
+//            System.out.println(newTodo.authorId + "Это authorId");
+
+
             jdbcTemplate.update(
+
                     sql,
                     Instant.now(),
                     Instant.now(),
                     newTodo.title,
-                    newTodo.completed,
+                    newTodo.statusId,
                     true,
-                    "Bogdan"
+                    newTodo.authorId
 
 
 
@@ -106,9 +113,9 @@ public class TodoJdbcService implements TodoService {
                     UPDATE TODO_ENTITY
                     SET UPDATED_AT = ?,
                         TEXT = ?,
-                        STATUS = ?,
+                        STATUS_ID = ?,
                         IS_VISIBLE = ?,
-                        AUTHOR = ?
+                        AUTHOR_ID = ?
                     WHERE ID = ?
                     """;
             jdbcTemplate.update(

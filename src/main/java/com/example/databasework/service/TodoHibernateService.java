@@ -2,13 +2,18 @@ package com.example.databasework.service;
 
 import com.example.databasework.Role;
 import com.example.databasework.dto.MainDto;
+import com.example.databasework.entity.AuthorEntity;
+import com.example.databasework.entity.StatusEntity;
 import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.repository.AuthorRepository;
+import com.example.databasework.repository.StatusRepository;
 import com.example.databasework.repository.TodoRepository;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationEvent;
+
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,25 +28,31 @@ import java.util.List;
 // * todo to read about @Transactional and apply that to all (mb) methods
 // */
 
-
+@Primary
 @Service
 public class TodoHibernateService implements TodoService{
     private final TodoRepository todoRepository;
     private final RestClient restClient;
     private final JWTService jwtService;
     private final RestTemplate restTemplate = new RestTemplate();
-    //private final JwtFilter jwtFilter;
+    private final AuthorRepository authorRepository;
+    private final StatusRepository statusRepository;
+
 
     @Value("${external-api.base-url}")
     private String baseUrl;
 
     public TodoHibernateService(TodoRepository todoRepository,
                                 RestClient restClient,
-                                JWTService jwtService) {
+                                JWTService jwtService,
+                                AuthorRepository authorRepository,
+                                StatusRepository statusRepository) {
 
         this.todoRepository = todoRepository;
         this.restClient = restClient;
         this.jwtService = jwtService;
+        this.authorRepository = authorRepository;
+        this.statusRepository = statusRepository;
     }
 
 
@@ -61,13 +72,23 @@ public class TodoHibernateService implements TodoService{
                 .body(MainDto[].class);
 
         for (MainDto dto : response) {
+            AuthorEntity author = authorRepository
+                    .findById(1)
+                    .orElseThrow();
+
+            StatusEntity status = statusRepository
+                    .findById(dto.completed ? 1 : 2)
+                    .orElseThrow();
+
+
             TodoEntity entity = new TodoEntity();
             entity.setCreated_at(Instant.now());
             entity.setUpdated_at(Instant.now());
             entity.setText(dto.title);
-            entity.setStatus(dto.completed);
+            entity.setAuthor(author);
+            entity.setStatus(status);
             entity.setIs_visible(true);
-            entity.setAuthor("Bogdan");
+
 
 
             todoRepository.save(entity);
@@ -104,31 +125,30 @@ public class TodoHibernateService implements TodoService{
     //post
     public ResponseEntity<?> addinTodos(Role role, MainDto newTodo) {
 
-        if (role == Role.ADMIN) {
-            System.out.println(baseUrl);
-            System.out.println("Отправляем запрос во внешний сервис");
-            MainDto created = restTemplate.postForObject(
-                    baseUrl + "/todos",
-                    newTodo,
-                    MainDto.class);
-            System.out.println("Получили ответ");
-            TodoEntity entity = new TodoEntity();
-            entity.setId(created.id);
-            entity.setCreated_at(Instant.now());
-            entity.setUpdated_at(Instant.now());
-            entity.setText(created.title);
-            entity.setStatus(created.completed);
-            entity.setIs_visible(true);
-            entity.setAuthor("Bogdan");
-
-            todoRepository.save(entity);
-
-            return ResponseEntity.ok(created);
+        if (role != Role.ADMIN) {
+            return ResponseEntity.status(403).body("Недостаточно прав");
         }
-        if (role == Role.USER) {
-            return ResponseEntity.status(403).body("Ты что тут делаешь юзер, только админ может добавлять пользователей");
-        }
-        return ResponseEntity.status(403).build();
+
+        AuthorEntity author = authorRepository
+                .findById(newTodo.authorId)
+                .orElseThrow(() -> new RuntimeException("Автор не найден"));
+
+        StatusEntity status = statusRepository
+                .findById(newTodo.statusId)
+                .orElseThrow(() -> new RuntimeException("Статус не найден"));
+
+        TodoEntity entity = new TodoEntity();
+
+        entity.setCreated_at(Instant.now());
+        entity.setUpdated_at(Instant.now());
+        entity.setText(newTodo.title);
+        entity.setAuthor(author);
+        entity.setStatus(status);
+        entity.setIs_visible(true);
+
+        todoRepository.save(entity);
+
+        return ResponseEntity.ok(entity);
     }
     //delete
     public ResponseEntity<?> deleteTodo(Role role, int id) {
@@ -144,29 +164,32 @@ public class TodoHibernateService implements TodoService{
         return ResponseEntity.status(403).build();
     }
     //patch
-    public ResponseEntity<?> updateTodo(Role role, MainDto updateData, int id){
-     if(role == Role.ADMIN){
-        MainDto updatedFromExternal = restTemplate.postForObject(
-                baseUrl + "/todos",
-                updateData,
-                MainDto.class
-        );
+    public ResponseEntity<?> updateTodo(Role role, MainDto updateData, int id) {
 
-        TodoEntity entity = new TodoEntity();
-        entity.setId(id);
-        entity.setCreated_at(Instant.now());
+        if (role != Role.ADMIN) {
+            return ResponseEntity.status(403).body("Недостаточно прав");
+        }
+
+        TodoEntity entity = todoRepository
+                .findById(id)
+                .orElseThrow();
+
+        AuthorEntity author = authorRepository
+                .findById(updateData.authorId)
+                .orElseThrow();
+
+        StatusEntity status = statusRepository
+                .findById(updateData.statusId)
+                .orElseThrow();
+
         entity.setUpdated_at(Instant.now());
-        entity.setText(updatedFromExternal.title);
-        entity.setStatus(updatedFromExternal.completed);
+        entity.setText(updateData.title);
+        entity.setAuthor(author);
+        entity.setStatus(status);
         entity.setIs_visible(true);
-        entity.setAuthor("Bogdan");
-
 
         todoRepository.save(entity);
+
+        return ResponseEntity.ok(entity);
     }
-            if (role == Role.USER){
-        return ResponseEntity.status(403).body("Незя тебе быть здесь пользователь, это дело Админов");
-    }
-        return ResponseEntity.ok("Обновлено todo с id: " +id );
-}
 }

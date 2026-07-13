@@ -1,5 +1,7 @@
 package com.example.databasework.service;
 
+import com.example.databasework.entity.AuthorEntity;
+import com.example.databasework.entity.StatusEntity;
 import com.example.databasework.entity.TodoEntity;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -12,14 +14,19 @@ public class TodoRowMapper implements RowMapper<TodoEntity> {
     public TodoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
 
         TodoEntity todo = new TodoEntity();
+        AuthorEntity author = new AuthorEntity();
+        StatusEntity status = new StatusEntity();
 
         todo.setId(rs.getInt("ID"));
         todo.setCreated_at(rs.getTimestamp("Created_at").toInstant());
         todo.setUpdated_at(rs.getTimestamp("Updated_at").toInstant());
         todo.setText(rs.getString("Text"));
-        todo.setStatus(rs.getBoolean("Status"));
+        status.setId(rs.getInt("STATUS_ID"));
         todo.setIs_visible(rs.getBoolean("Is_visible"));
-        todo.setAuthor(rs.getString("Author"));
+        author.setId(rs.getInt("AUTHOR_ID"));
+
+
+
 
         return todo;
     }

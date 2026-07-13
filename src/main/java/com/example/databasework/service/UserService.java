@@ -2,7 +2,7 @@ package com.example.databasework.service;
 
 import com.example.databasework.entity.UserEntity;
 import com.example.databasework.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
+
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class UserService {
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
-//  @PostConstruct
+
   @EventListener(ApplicationReadyEvent.class)
 
     public void loadUsers() {
