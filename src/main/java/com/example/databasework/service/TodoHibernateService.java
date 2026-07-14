@@ -7,6 +7,7 @@ import com.example.databasework.entity.StatusEntity;
 import com.example.databasework.entity.TodoEntity;
 import com.example.databasework.repository.AuthorRepository;
 import com.example.databasework.repository.StatusRepository;
+import com.example.databasework.repository.TodoCriteriaRepository;
 import com.example.databasework.repository.TodoRepository;
 import java.time.Instant;
 
@@ -29,7 +30,7 @@ import java.util.Random;
 // * todo to read about @Transactional and apply that to all (mb) methods
 // */
 
-//@Primary
+@Primary
 @Service
 public class TodoHibernateService implements TodoService{
     private final TodoRepository todoRepository;
@@ -38,6 +39,7 @@ public class TodoHibernateService implements TodoService{
     private final RestTemplate restTemplate = new RestTemplate();
     private final AuthorRepository authorRepository;
     private final StatusRepository statusRepository;
+    private final TodoCriteriaRepository todoCriteriaRepository;
 
 
     @Value("${external-api.base-url}")
@@ -47,13 +49,15 @@ public class TodoHibernateService implements TodoService{
                                 RestClient restClient,
                                 JWTService jwtService,
                                 AuthorRepository authorRepository,
-                                StatusRepository statusRepository) {
+                                StatusRepository statusRepository,
+                                TodoCriteriaRepository todoCriteriaRepository) {
 
         this.todoRepository = todoRepository;
         this.restClient = restClient;
         this.jwtService = jwtService;
         this.authorRepository = authorRepository;
         this.statusRepository = statusRepository;
+        this.todoCriteriaRepository = todoCriteriaRepository;
     }
 
 
@@ -207,6 +211,18 @@ public class TodoHibernateService implements TodoService{
         if (role == Role.USER){
 
             return todoRepository.findByAuthorIdOrderByCreatedAtDesc(authorId);
+        }
+        return List.of();
+    }
+
+    //getcreteria
+    public List<TodoEntity> getIdTodoCriteria(Integer authorId, Role role) {
+        if (role == Role.ADMIN) {
+            return todoCriteriaRepository.findByAuthorIdOrderByCreatedAt(authorId);
+
+        }
+        if (role == Role.USER){
+            return todoCriteriaRepository.findByAuthorIdOrderByCreatedAt(authorId);
         }
         return List.of();
     }

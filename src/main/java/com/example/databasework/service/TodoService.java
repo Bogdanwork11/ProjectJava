@@ -18,4 +18,6 @@ public interface TodoService {
     ResponseEntity<?> updateTodo(Role role, MainDto updateData, int id);
 
     List<TodoEntity> getIdTodo(Integer authorId, Role role);
+
+    List<TodoEntity> getIdTodoCriteria(Integer authorId, Role role);
 }

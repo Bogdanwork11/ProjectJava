@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-@Primary
+//Primary
 @Service
 public class TodoJdbcService implements TodoService {
 
@@ -54,11 +54,11 @@ public class TodoJdbcService implements TodoService {
         if (role == Role.ADMIN) {
 
             String sql = """
-                    
+
                         INSERT INTO TODO_ENTITY
                     (CREATED_AT, UPDATED_AT, TEXT, STATUS_ID, IS_VISIBLE, AUTHOR_ID)
                     VALUES (?, ?, ?, ?, ?, ?)
-                    
+
                     """;
 //            System.out.println(newTodo.statusId + "Это statusId");
 //            System.out.println(newTodo.authorId + "Это authorId");
@@ -160,4 +160,26 @@ public class TodoJdbcService implements TodoService {
 
         return new ArrayList<>();
     }
+
+    public List<TodoEntity>getIdTodoCriteria(Integer id, Role role){
+        if (role == Role.ADMIN) {
+            String sql = """
+                    SELECT t.*, a.AUTHOR as AUTHOR_NAME, s.STATUS as STATUS_NAME
+                    FROM TODO_ENTITY t
+                    JOIN AUTHOR_ENTITY a ON t.AUTHOR_ID = a.ID
+                    JOIN STATUS_ENTITY s ON t.STATUS_ID = s.ID
+                    WHERE t.AUTHOR_ID = ?
+                    ORDER BY CREATED_AT DESC;
+                    """;
+            return jdbcTemplate.query(
+                    sql,
+                    new TodoRowMapper(),
+                    id
+
+            );
+        }
+
+        return new ArrayList<>();
+    }
+
 }
