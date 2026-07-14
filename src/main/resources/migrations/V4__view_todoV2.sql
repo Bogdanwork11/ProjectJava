@@ -1,10 +1,18 @@
+DROP VIEW IF EXISTS TODO_VIEW;
+
 CREATE VIEW TODO_VIEW AS
 SELECT
-    id,
-    text,
-    author_id,
-    status_id,
-    created_at,
-    updated_at,
-    is_visible
-FROM TODO_ENTITY;
+    t.ID,
+    t.TEXT,
+    t.AUTHOR_ID,
+    t.STATUS_ID,
+    t.CREATED_AT,
+    t.UPDATED_AT,
+    t.IS_VISIBLE,
+    a.AUTHOR AS AUTHOR_NAME,
+    s.STATUS AS STATUS_NAME
+FROM TODO_ENTITY t
+         JOIN AUTHOR_ENTITY a
+              ON t.AUTHOR_ID = a.ID
+         JOIN STATUS_ENTITY s
+              ON t.STATUS_ID = s.ID;
