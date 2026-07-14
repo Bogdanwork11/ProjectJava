@@ -193,7 +193,7 @@ public class TodoHibernateService implements TodoService{
 
         todoRepository.save(entity);
 
-        return ResponseEntity.ok(entity);
+        return    ResponseEntity.ok(entity);
     }
 
 
@@ -201,12 +201,12 @@ public class TodoHibernateService implements TodoService{
     public List<TodoEntity> getIdTodo(Integer authorId, Role role) {
         if (role == Role.ADMIN){
 
-            return todoRepository.findByAuthorId(authorId);
+            return todoRepository.findByAuthorIdOrderByCreatedAtDesc(authorId);
 
         }
         if (role == Role.USER){
 
-            return todoRepository.findByAuthorId(authorId);
+            return todoRepository.findByAuthorIdOrderByCreatedAtDesc(authorId);
         }
         return List.of();
     }

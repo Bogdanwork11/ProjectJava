@@ -148,6 +148,7 @@ public class TodoJdbcService implements TodoService {
                     JOIN AUTHOR_ENTITY a ON t.AUTHOR_ID = a.ID
                     JOIN STATUS_ENTITY s ON t.STATUS_ID = s.ID
                     WHERE t.AUTHOR_ID = ?
+                    ORDER BY CREATED_AT DESC;
                     """;
             return jdbcTemplate.query(
                     sql,
