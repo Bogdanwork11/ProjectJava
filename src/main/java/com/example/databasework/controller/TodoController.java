@@ -122,6 +122,18 @@ public class  TodoController {
         return todoService.getIdTodo(authorId, role);
     }
 
+    @GetMapping("/criteria/{authorId}")
+    public List<TodoEntity> getIdTodoCriteria(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Integer authorId) {
+        String token = authHeader.replace("Bearer", "");
+        jwtFilter.validateActiveUser(token);
+        Claims claims = jwtFilter.extractClaims(token);
+        String roleStr = claims.get("role", String.class);
+        Role role = Role.fromString(roleStr);
+
+        return todoService.getIdTodoCriteria(authorId, role);
+    }
 
 
 }
