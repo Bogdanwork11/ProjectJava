@@ -13,7 +13,7 @@ public class TodoEntity {
     private Integer id;
 
     @Column(name = "CREATED_AT")
-    private Instant created_at;
+    private Instant createdAt;
 
     @Column(name = "UPDATED_AT")
     private Instant updated_at;
@@ -37,9 +37,9 @@ public class TodoEntity {
     public  TodoEntity() {
     }
 
-    public TodoEntity(Integer id, Instant created_at, Instant updated_at, String text, StatusEntity status, Boolean is_visible, AuthorEntity author) {
+    public TodoEntity(Integer id, Instant CreatedAt, Instant updated_at, String text, StatusEntity status, Boolean is_visible, AuthorEntity author) {
         this.id = id;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
         this.updated_at = updated_at;
         this.text = text;
         this.status = status;
@@ -54,7 +54,7 @@ public class TodoEntity {
     }
 
     public Instant getCreated_at() {
-        return created_at;
+        return createdAt;
     }
 
     public Instant getUpdated_at() {
@@ -84,8 +84,8 @@ public class TodoEntity {
 
     ;
 
-    public void setCreated_at(Instant created_at) {
-        this.created_at = created_at;
+    public void setCreated_at(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setUpdated_at(Instant updated_at) {
