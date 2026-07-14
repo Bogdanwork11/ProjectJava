@@ -9,10 +9,10 @@ import java.util.List;
 @Repository
 public interface TodoRepository extends JpaRepository<TodoEntity, Integer> {
 
-    List<TodoEntity> findByAuthorId(Integer authorId);
+    List<TodoEntity> findByAuthorIdOrderByCreatedAtDesc(Integer authorId);
 
-    //Sql под капотом
     //select * from todo_entity
-    //where author_id = ?
+    //where author_id = 1/2
+    //order by created_at desc/asc
 
 }
