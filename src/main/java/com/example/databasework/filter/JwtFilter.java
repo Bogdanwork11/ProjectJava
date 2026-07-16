@@ -16,7 +16,7 @@ public class JwtFilter { //todo to read about springboot filters
     private final JWTService jWTService;
     private final UserRepository userRepository;
 
-    @Value("${spring.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
     public JwtFilter(JWTService jWTService, UserRepository userRepository) {
