@@ -2,7 +2,7 @@ package com.example.databasework.dto;
 
 import java.math.BigDecimal;
 
-public class DtoTranzaktion {
+public class DtoTranzaktion{
     private Integer from;
     private Integer to;
     private BigDecimal amount;
