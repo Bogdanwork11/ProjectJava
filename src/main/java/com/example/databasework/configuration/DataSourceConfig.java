@@ -23,7 +23,7 @@ public class DataSourceConfig {
     @Bean(name = "postgresDataSource")
     public DataSource postgresDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setPoolName("BankBogdan");
+        config.setPoolName("BankBogdan"); //todo to receive all these values from .properties
         config.setJdbcUrl("jdbc:postgresql://localhost:5432/bank_db");
         config.setUsername("postgres");
         config.setPassword("28085678");
