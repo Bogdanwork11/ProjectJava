@@ -18,7 +18,7 @@ public class JWTService {
 
     //to read why it is bad to keep secrets or password in String
     //private String secret = "mySuperSecretKeyThatIsAtLeast32CharactersLong!!!!";
-    @Value("${spring.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
     //генерация токена
     public String generateToken(String username, String role) {
