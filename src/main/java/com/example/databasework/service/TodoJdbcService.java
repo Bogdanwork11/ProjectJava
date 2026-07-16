@@ -69,10 +69,10 @@ public class TodoJdbcService implements TodoService {
                     sql,
                     Instant.now(),
                     Instant.now(),
-                    newTodo.title,
-                    newTodo.statusId,
+                    newTodo.title(),
+                    newTodo.statusId(),
                     true,
-                    newTodo.authorId
+                    newTodo.authorId()
 
 
             );
@@ -121,10 +121,10 @@ public class TodoJdbcService implements TodoService {
             jdbcTemplate.update(
                     sql,
                     Instant.now(),
-                    updateData.title,
-                    updateData.statusId,
+                    updateData.title(),
+                    updateData.statusId(),
                     true,
-                    updateData.authorId,
+                    updateData.authorId(),
                     id
 
             );

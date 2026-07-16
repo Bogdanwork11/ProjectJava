@@ -4,6 +4,7 @@ import com.example.databasework.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -15,7 +16,10 @@ import java.util.Map;
 @Service
 public class JWTService {
 
-    private String secret = "mySuperSecretKeyThatIsAtLeast32CharactersLong!!!!";
+    //to read why it is bad to keep secrets or password in String
+    //private String secret = "mySuperSecretKeyThatIsAtLeast32CharactersLong!!!!";
+    @Value("${spring.jwt.secret}")
+    private String secret;
     //генерация токена
     public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();

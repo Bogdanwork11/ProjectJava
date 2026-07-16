@@ -5,6 +5,7 @@ import com.example.databasework.dto.MainDto;
 import com.example.databasework.entity.AuthorEntity;
 import com.example.databasework.entity.StatusEntity;
 import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.filter.JwtFilter;
 import com.example.databasework.repository.AuthorRepository;
 import com.example.databasework.repository.StatusRepository;
 import com.example.databasework.repository.TodoCriteriaRepository;
@@ -40,6 +41,7 @@ public class TodoHibernateService implements TodoService{
     private final AuthorRepository authorRepository;
     private final StatusRepository statusRepository;
     private final TodoCriteriaRepository todoCriteriaRepository;
+    private final JwtFilter jwtFilter;
 
 
     @Value("${external-api.base-url}")
@@ -50,7 +52,9 @@ public class TodoHibernateService implements TodoService{
                                 JWTService jwtService,
                                 AuthorRepository authorRepository,
                                 StatusRepository statusRepository,
-                                TodoCriteriaRepository todoCriteriaRepository) {
+                                TodoCriteriaRepository todoCriteriaRepository,
+                                JwtFilter jwtFilter,
+                                UserService userService) {
 
         this.todoRepository = todoRepository;
         this.restClient = restClient;
@@ -58,6 +62,9 @@ public class TodoHibernateService implements TodoService{
         this.authorRepository = authorRepository;
         this.statusRepository = statusRepository;
         this.todoCriteriaRepository = todoCriteriaRepository;
+        this.jwtFilter = jwtFilter;
+
+
     }
 
 
@@ -67,8 +74,8 @@ public class TodoHibernateService implements TodoService{
     @EventListener(ApplicationReadyEvent.class)
     public void loadTodosFromApi() {
 
-        String token = jwtService.generateToken("Bogdan@icloud.com", "ADMIN");
-        System.out.println("Токен: " + token);
+//        String token = jwtService.generateToken(user.getlogin(), user.getRole);
+//        System.out.println("Токен: " + token);
 
         MainDto[] response = restClient
                 .get()
@@ -84,14 +91,14 @@ public class TodoHibernateService implements TodoService{
                     .orElseThrow();
 
             StatusEntity status = statusRepository
-                    .findById(dto.completed ? 1 : 2)
+                    .findById(dto.completed() ? 1 : 2)
                     .orElseThrow();
 
 
             TodoEntity entity = new TodoEntity();
-            entity.setCreated_at(Instant.now());
+            entity.setCreatedAt(Instant.now());
             entity.setUpdated_at(Instant.now());
-            entity.setText(dto.title);
+            entity.setText(dto.title());
             entity.setAuthor(author);
             entity.setStatus(status);
             entity.setIs_visible(true);
@@ -119,6 +126,7 @@ public class TodoHibernateService implements TodoService{
     //get
     public List<TodoEntity> getAllTodos(Role role) {
 
+
         if (role == Role.ADMIN) {
             return todoRepository.findAll();
         }
@@ -137,18 +145,18 @@ public class TodoHibernateService implements TodoService{
         }
 
         AuthorEntity author = authorRepository
-                .findById(newTodo.authorId)
+                .findById(newTodo.authorId())
                 .orElseThrow(() -> new RuntimeException("Автор не найден"));
 
         StatusEntity status = statusRepository
-                .findById(newTodo.statusId)
+                .findById(newTodo.statusId())
                 .orElseThrow(() -> new RuntimeException("Статус не найден"));
 
         TodoEntity entity = new TodoEntity();
 
-        entity.setCreated_at(Instant.now());
+        entity.setCreatedAt(Instant.now());
         entity.setUpdated_at(Instant.now());
-        entity.setText(newTodo.title);
+        entity.setText(newTodo.title());
         entity.setAuthor(author);
         entity.setStatus(status);
         entity.setIs_visible(true);
@@ -182,15 +190,15 @@ public class TodoHibernateService implements TodoService{
                 .orElseThrow();
 
         AuthorEntity author = authorRepository
-                .findById(updateData.authorId)
+                .findById(updateData.authorId())
                 .orElseThrow();
 
         StatusEntity status = statusRepository
-                .findById(updateData.statusId)
+                .findById(updateData.statusId())
                 .orElseThrow();
 
         entity.setUpdated_at(Instant.now());
-        entity.setText(updateData.title);
+        entity.setText(updateData.title());
         entity.setAuthor(author);
         entity.setStatus(status);
         entity.setIs_visible(true);

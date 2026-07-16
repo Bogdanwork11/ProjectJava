@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-  @EventListener(ApplicationReadyEvent.class)
-
+    @EventListener(ApplicationReadyEvent.class)
     public void loadUsers() {
         UserEntity admin = new UserEntity();
         admin.setId(1);
