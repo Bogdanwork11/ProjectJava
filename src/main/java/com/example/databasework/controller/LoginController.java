@@ -1,5 +1,6 @@
 package com.example.databasework.controller;
 
+import com.example.databasework.dto.LoginRequest;
 import com.example.databasework.entity.UserEntity;
 import com.example.databasework.repository.UserRepository;
 import com.example.databasework.service.JWTService;
@@ -21,24 +22,21 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public String login(@RequestBody LoginRequest request) {
 
-        UserEntity user = userRepository.findByLogin(request.getLogin());
+        UserEntity user = userRepository.findByLogin(request.login());
 
         if (user == null) {
-            return ResponseEntity.status(401).body("Пользователь не найден");
+            throw new RuntimeException("Пользователь не найден");
         }
 
-        if (!user.getPassword().equals(request.getPassword())) {
-            return ResponseEntity.status(401).body("Не верный пароль");
+        if (!user.getPassword().equals(request.password())) {
+            throw new RuntimeException("Не вернвй пароль");
         }
-
-        if (!Boolean.TRUE.equals(user.getIsActive())) {
-            throw new RuntimeException("User is inactive");
-        }
-
         String token = jwtService.generateToken(user.getLogin(), user.getRole());
+        System.out.println("Токен: " + token);
 
-        return ResponseEntity.ok(token);
+        return jwtService.generateToken(user.getLogin(), user.getRole());
     }
+
 }

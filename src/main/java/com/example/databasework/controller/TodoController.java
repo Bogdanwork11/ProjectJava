@@ -18,15 +18,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/todos")
-public class  TodoController {
+public class TodoController {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    //private final TodoHibernateService todoService;
     private final TodoService todoService;
     private final JwtFilter jwtFilter;
     private final V3serviceTranz V3service;
-
-
 
     public TodoController(TodoService todoService, JwtFilter jwtFilter, V3serviceTranz service) {
         this.todoService = todoService;
@@ -37,16 +34,16 @@ public class  TodoController {
     @Value("${external-api.base-url}")
     private String Todos_url;
 
+
+//    @PostMapping("/users")
+//    public ResponseEntity<?> addInUsers(
+//
+//    )
+
     @GetMapping
     public List<TodoEntity> getAllTodos(
-        @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        jwtFilter.validateActiveUser(token);
-        Claims claims = jwtFilter.extractClaims(token);
-        String roleStr = claims.get("role", String.class);
-
-        Role role = Role.fromString(roleStr);
-
+            @RequestHeader("Authorization") String authHeader) {
+        Role role = jwtFilter.authentificate(authHeader);
         return todoService.getAllTodos(role);
     }
 
@@ -54,30 +51,19 @@ public class  TodoController {
     public ResponseEntity<?> addinTodos(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody MainDto newTodo) {
-
-        String token = authHeader.replace("Bearer ", "");
-
-        jwtFilter.validateActiveUser(token);
-
-        Claims claims = jwtFilter.extractClaims(token);
-
-        String roleStr = claims.get("role", String.class);
-        Role role = Role.fromString(roleStr);
-
+        Role role = jwtFilter.authentificate(authHeader);
         return todoService.addinTodos(role, newTodo);
-
-
     }
+
+    //fixme to move that from here
+    //fixme to move that from here
+    //todo to read about how we can extract role at filter and pin that to invocation (current thread) context
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteTodo(
             @RequestHeader("Authorization") String authHeader,
-            @PathVariable int id){
-        String token = authHeader.replace("Bearer ", "");
-        jwtFilter.validateActiveUser(token);
-        Claims claims = jwtFilter.extractClaims(token);
-        String roleStr = claims.get("role", String.class);
-        Role role = Role.fromString(roleStr);
-
+            @PathVariable int id) {
+        Role role = jwtFilter.authentificate(authHeader);
         return todoService.deleteTodo(role, id);
     }
 
@@ -85,16 +71,12 @@ public class  TodoController {
     public ResponseEntity<?> updateTodo(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody MainDto updateData,
-            @PathVariable int id){
-        String token = authHeader.replace("Bearer ", "");
-        jwtFilter.validateActiveUser(token);
-        Claims claims = jwtFilter.extractClaims(token);
-        String roleStr = claims.get("role", String.class);
-        Role role = Role.fromString(roleStr);
-
-
+            @PathVariable int id) {
+        Role role = jwtFilter.authentificate(authHeader);
         return todoService.updateTodo(role, updateData, id);
     }
+
+    //----------------------------------------------------------
 
     //транзакции эндпоинты
     @PatchMapping("/transfer")
@@ -109,15 +91,14 @@ public class  TodoController {
         return V3service.getInfo();
     }
 
+    //----------------------------------------------------------
+
     @GetMapping("/{authorId}")
     public List<TodoEntity> getIdTodo(
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Integer authorId) {
-        String token = authHeader.replace("Bearer", "");
-        jwtFilter.validateActiveUser(token);
-        Claims claims = jwtFilter.extractClaims(token);
-        String roleStr = claims.get("role", String.class);
-        Role role = Role.fromString(roleStr);
+
+        Role role = jwtFilter.authentificate(authHeader);
 
         return todoService.getIdTodo(authorId, role);
     }
@@ -126,11 +107,7 @@ public class  TodoController {
     public List<TodoEntity> getIdTodoCriteria(
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Integer authorId) {
-        String token = authHeader.replace("Bearer", "");
-        jwtFilter.validateActiveUser(token);
-        Claims claims = jwtFilter.extractClaims(token);
-        String roleStr = claims.get("role", String.class);
-        Role role = Role.fromString(roleStr);
+        Role role = jwtFilter.authentificate(authHeader);
 
         return todoService.getIdTodoCriteria(authorId, role);
     }
