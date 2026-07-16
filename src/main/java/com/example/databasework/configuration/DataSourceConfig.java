@@ -2,6 +2,7 @@ package com.example.databasework.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,29 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    @Value("${postgres.datasource.pool-name}")
+    private String poolName;
+
+    @Value("${postgres.datasource.url}")
+    private String url;
+
+    @Value("${postgres.datasource.username}")
+    private String username;
+
+    @Value("${postgres.datasource.password}")
+    private String password;
+
+    @Value("${postgres.datasource.connection-timeout}")
+    private long connectionTimeout;
+
+    @Value("${postgres.datasource.idle-timeout}")
+    private long idleTimeout;
+
+    @Value("${postgres.datasource.maximum-pool-size}")
+    private int maximumPoolSize;
+
+    @Value("${postgres.datasource.minimum-idle}")
+    private int minimumIdle;
 
     @Primary
     @Bean(name = "appDataSource")
@@ -19,18 +43,19 @@ public class DataSourceConfig {
         return dataSourceProperties.initializeDataSourceBuilder().build();
     }
 
-
     @Bean(name = "postgresDataSource")
     public DataSource postgresDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setPoolName("BankBogdan"); //todo to receive all these values from .properties
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/bank_db");
-        config.setUsername("postgres");
-        config.setPassword("28085678");
-        config.setConnectionTimeout(30000);
-        config.setIdleTimeout(600000);
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(2);
+
+        config.setPoolName(poolName);
+        config.setJdbcUrl(url);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setConnectionTimeout(connectionTimeout);
+        config.setIdleTimeout(idleTimeout);
+        config.setMaximumPoolSize(maximumPoolSize);
+        config.setMinimumIdle(minimumIdle);
+
         return new HikariDataSource(config);
     }
 }
