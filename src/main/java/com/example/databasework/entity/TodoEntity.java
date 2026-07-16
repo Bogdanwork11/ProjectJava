@@ -1,12 +1,18 @@
 package com.example.databasework.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 import java.time.Instant;
 
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TodoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,82 +36,7 @@ public class TodoEntity {
 
     @ManyToOne
     @JoinColumn(name = "AUTHOR_ID")
-    private AuthorEntity author;
+    private AuthorEntity author;}
 
 
 
-    public  TodoEntity() {
-    }
-
-    public TodoEntity(Integer id, Instant CreatedAt, Instant updated_at, String text, StatusEntity status, Boolean is_visible, AuthorEntity author) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.updated_at = updated_at;
-        this.text = text;
-        this.status = status;
-        this.is_visible = is_visible;
-        this.author = author;
-
-
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Instant getCreated_at() {
-        return createdAt;
-    }
-
-    public Instant getUpdated_at() {
-        return updated_at;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public StatusEntity getStatus() {
-        return status;
-    }
-
-    public Boolean getIs_visible() {
-        return is_visible;
-    }
-
-    public AuthorEntity getAuthor() {
-        return author;
-    }
-
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    ;
-
-    public void setCreated_at(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdated_at(Instant updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setStatus(StatusEntity status) {
-        this.status = status;
-    }
-
-    public void setIs_visible(Boolean is_visible) {
-        this.is_visible = is_visible;
-    }
-
-    public void setAuthor(AuthorEntity author) {
-        this.author = author;
-    }
-
-}
