@@ -5,11 +5,10 @@ import com.example.databasework.dto.MainDto;
 import com.example.databasework.entity.AuthorEntity;
 import com.example.databasework.entity.StatusEntity;
 import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.entity.UserEntity;
 import com.example.databasework.filter.JwtFilter;
-import com.example.databasework.repository.AuthorRepository;
-import com.example.databasework.repository.StatusRepository;
-import com.example.databasework.repository.TodoCriteriaRepository;
-import com.example.databasework.repository.TodoRepository;
+import com.example.databasework.repository.*;
+
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +17,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
@@ -42,6 +43,8 @@ public class TodoHibernateService implements TodoService{
     private final StatusRepository statusRepository;
     private final TodoCriteriaRepository todoCriteriaRepository;
     private final JwtFilter jwtFilter;
+    private final UserRepository userRepository;
+
 
 
     @Value("${external-api.base-url}")
@@ -54,7 +57,8 @@ public class TodoHibernateService implements TodoService{
                                 StatusRepository statusRepository,
                                 TodoCriteriaRepository todoCriteriaRepository,
                                 JwtFilter jwtFilter,
-                                UserService userService) {
+                                UserService userService,
+                                UserRepository userRepository) {
 
         this.todoRepository = todoRepository;
         this.restClient = restClient;
@@ -63,6 +67,7 @@ public class TodoHibernateService implements TodoService{
         this.statusRepository = statusRepository;
         this.todoCriteriaRepository = todoCriteriaRepository;
         this.jwtFilter = jwtFilter;
+        this.userRepository = userRepository;
 
 
     }
@@ -233,5 +238,31 @@ public class TodoHibernateService implements TodoService{
             return todoCriteriaRepository.findByAuthorIdOrderByCreatedAt(authorId);
         }
         return List.of();
+    }
+
+    //fixme to move to filter
+    @Override
+    public String oauth(@AuthenticationPrincipal OAuth2User user) {
+        if (user == null) {
+            return "Пользователь не авторизован";
+        }
+
+        String email = user.getAttribute("email");
+
+        UserEntity foundUser = userRepository.findByLogin(email);
+
+        if (foundUser == null) {
+            return "Пользователь не найден";
+        }
+
+        String token = jwtService.generateToken(foundUser.getLogin(), foundUser.getRole());
+        System.out.println("Токен: " + token);
+
+        return "Здравствуйте, " + user.getAttribute("name\n")
+                + " Ваш email: " + user.getAttribute("email\n")
+                + "Ваши данные: " + user
+                + "Здравствуйте, " + foundUser.getLogin()
+                + "ваша роль: " + foundUser.getRole();
+
     }
 }

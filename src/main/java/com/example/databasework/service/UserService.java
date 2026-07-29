@@ -19,7 +19,7 @@ public class UserService {
     public void loadUsers() {
         UserEntity admin = new UserEntity();
         admin.setId(1);
-        admin.setLogin("Bogdan@icloud.com");
+        admin.setLogin("Bogdankosyanenko@icloud.com");
         admin.setPassword("28085678");
         admin.setRole("ADMIN");
         admin.setIsActive(true);

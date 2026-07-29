@@ -1,6 +1,7 @@
 package com.example.databasework.service;
 
 import com.example.databasework.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -41,4 +42,27 @@ public class JWTService {
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
+
+    //Переместить в фильтр? Спросить у gpt?
+    //claim из токена
+    public Claims extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    //роль из токена
+    public String extractRole(String token) {
+        Claims claims = extractClaims(token);
+        return claims.get("role", String.class);
+    }
+
+    //просрочен ли токен
+    public boolean isTokenValid(String token) {
+        Claims claims = extractClaims(token);
+        Date expiration = claims.getExpiration();
+        return expiration.after(new Date());
+    }
+
 }
