@@ -4,12 +4,17 @@ import com.example.databasework.Role;
 import com.example.databasework.dto.DtoTranzaktion;
 import com.example.databasework.dto.MainDto;
 import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.entity.UserEntity;
 import com.example.databasework.filter.JwtFilter;
+import com.example.databasework.repository.UserRepository;
+import com.example.databasework.service.JWTService;
 import com.example.databasework.service.TodoService;
 import com.example.databasework.service.V3serviceTranz;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,11 +29,15 @@ public class TodoController {
     private final TodoService todoService;
     private final JwtFilter jwtFilter;
     private final V3serviceTranz V3service;
+    private final UserRepository userRepository;
+    private final JWTService jwtService;
 
-    public TodoController(TodoService todoService, JwtFilter jwtFilter, V3serviceTranz service) {
+    public TodoController(TodoService todoService, JwtFilter jwtFilter, V3serviceTranz service, UserRepository userRepository, JWTService jwtService) {
         this.todoService = todoService;
         this.jwtFilter = jwtFilter;
         this.V3service = service;
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
     @Value("${external-api.base-url}")
@@ -110,6 +119,18 @@ public class TodoController {
         Role role = jwtFilter.authentificate(authHeader);
 
         return todoService.getIdTodoCriteria(authorId, role);
+    }
+
+    //----------------------------------------------------------
+
+    @GetMapping("/")
+    public String oauth(@AuthenticationPrincipal OAuth2User user) {
+        return todoService.oauth(user);
+
+//        return "Здравствуйте, " + user.getAttribute("name")
+//                + " Ваш email: " + user.getAttribute("email");
+
+
     }
 
 
