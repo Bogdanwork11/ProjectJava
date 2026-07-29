@@ -122,6 +122,7 @@ public class TodoController {
     }
 
     //----------------------------------------------------------
+//авторизацую в отдельный контроллер поместить
 
     @GetMapping("/")
     public String oauth(@AuthenticationPrincipal OAuth2User user) {
