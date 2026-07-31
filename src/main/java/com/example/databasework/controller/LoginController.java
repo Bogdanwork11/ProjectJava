@@ -1,11 +1,10 @@
 package com.example.databasework.controller;
 
 import com.example.databasework.dto.LoginRequest;
-import com.example.databasework.entity.UserEntity;
+import com.example.databasework.entity.User;
 import com.example.databasework.repository.UserRepository;
 import com.example.databasework.service.JWTService;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +23,7 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
 
-        UserEntity user = userRepository.findByLogin(request.login());
+        User user = userRepository.findByLogin(request.login());
 
         if (user == null) {
             throw new RuntimeException("Пользователь не найден");

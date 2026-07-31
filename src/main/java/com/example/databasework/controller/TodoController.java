@@ -1,26 +1,20 @@
 package com.example.databasework.controller;
 
-import com.example.databasework.Role;
 import com.example.databasework.dto.DtoTranzaktion;
 import com.example.databasework.dto.MainDto;
-import com.example.databasework.entity.TodoEntity;
-import com.example.databasework.entity.UserEntity;
+import com.example.databasework.entity.Todo;
 import com.example.databasework.filter.JwtFilter;
-import com.example.databasework.repository.UserRepository;
-import com.example.databasework.service.JWTService;
 import com.example.databasework.service.TodoService;
 import com.example.databasework.service.V3serviceTranz;
-import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/todos")
 public class TodoController {
@@ -29,65 +23,46 @@ public class TodoController {
     private final TodoService todoService;
     private final JwtFilter jwtFilter;
     private final V3serviceTranz V3service;
-    private final UserRepository userRepository;
-    private final JWTService jwtService;
 
-    public TodoController(TodoService todoService, JwtFilter jwtFilter, V3serviceTranz service, UserRepository userRepository, JWTService jwtService) {
+    public TodoController(TodoService todoService, JwtFilter jwtFilter, V3serviceTranz service) {
         this.todoService = todoService;
         this.jwtFilter = jwtFilter;
         this.V3service = service;
-        this.userRepository = userRepository;
-        this.jwtService = jwtService;
     }
 
     @Value("${external-api.base-url}")
     private String Todos_url;
 
 
-//    @PostMapping("/users")
-//    public ResponseEntity<?> addInUsers(
-//
-//    )
-
     @GetMapping
-    public List<TodoEntity> getAllTodos(
-            @RequestHeader("Authorization") String authHeader) {
-        Role role = jwtFilter.authentificate(authHeader);
-        return todoService.getAllTodos(role);
+    public List<Todo> getAllTodos(
+            HttpServletRequest request) {
+        return todoService.getAllTodos();
     }
 
     @PostMapping
     public ResponseEntity<?> addinTodos(
-            @RequestHeader("Authorization") String authHeader,
             @RequestBody MainDto newTodo) {
-        Role role = jwtFilter.authentificate(authHeader);
-        return todoService.addinTodos(role, newTodo);
+        return todoService.addinTodos(newTodo);
     }
 
-    //fixme to move that from here
-    //fixme to move that from here
-    //todo to read about how we can extract role at filter and pin that to invocation (current thread) context
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteTodo(
-            @RequestHeader("Authorization") String authHeader,
             @PathVariable int id) {
-        Role role = jwtFilter.authentificate(authHeader);
-        return todoService.deleteTodo(role, id);
+        return todoService.deleteTodo(id);
     }
 
     @PatchMapping(value = "/{id}")
     public ResponseEntity<?> updateTodo(
-            @RequestHeader("Authorization") String authHeader,
             @RequestBody MainDto updateData,
             @PathVariable int id) {
-        Role role = jwtFilter.authentificate(authHeader);
-        return todoService.updateTodo(role, updateData, id);
+        return todoService.updateTodo(updateData, id);
     }
 
     //----------------------------------------------------------
 
-    //транзакции эндпоинты
+    //эндпоинты транзакции
     @PatchMapping("/transfer")
     public String transfer(@RequestBody DtoTranzaktion request) {
         V3service.transfer(request);
@@ -103,36 +78,17 @@ public class TodoController {
     //----------------------------------------------------------
 
     @GetMapping("/{authorId}")
-    public List<TodoEntity> getIdTodo(
-            @RequestHeader("Authorization") String authHeader,
+    public List<Todo> getIdTodo(
             @PathVariable Integer authorId) {
-
-        Role role = jwtFilter.authentificate(authHeader);
-
-        return todoService.getIdTodo(authorId, role);
+        return todoService.getIdTodo(authorId);
     }
 
     @GetMapping("/criteria/{authorId}")
-    public List<TodoEntity> getIdTodoCriteria(
-            @RequestHeader("Authorization") String authHeader,
+    public List<Todo> getIdTodoCriteria(
             @PathVariable Integer authorId) {
-        Role role = jwtFilter.authentificate(authHeader);
-
-        return todoService.getIdTodoCriteria(authorId, role);
+        return todoService.getIdTodoCriteria(authorId);
     }
 
-    //----------------------------------------------------------
-//авторизацую в отдельный контроллер поместить
-
-    @GetMapping("/")
-    public String oauth(@AuthenticationPrincipal OAuth2User user) {
-        return todoService.oauth(user);
-
-//        return "Здравствуйте, " + user.getAttribute("name")
-//                + " Ваш email: " + user.getAttribute("email");
-
-
-    }
 
 
 }
