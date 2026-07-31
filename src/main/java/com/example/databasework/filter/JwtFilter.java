@@ -1,76 +1,70 @@
 package com.example.databasework.filter;
 
-import com.example.databasework.Role;
-import com.example.databasework.entity.UserEntity;
-import com.example.databasework.repository.UserRepository;
 import com.example.databasework.service.JWTService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
+import java.util.List;
+
+@Slf4j
 @Component
-public class JwtFilter { //todo to read about springboot filters
-    private final JWTService jWTService;
-    private final UserRepository userRepository;
+public class JwtFilter extends OncePerRequestFilter { //todo to read about springboot filters
+    private final JWTService jwtService;
 
-    @Value("${jwt.secret}")
-    private String secret;
-
-    public JwtFilter(JWTService jWTService, UserRepository userRepository) {
-        this.jWTService = jWTService;
-        this.userRepository = userRepository;
+    public JwtFilter(JWTService jwtService) {
+        this.jwtService = jwtService;
     }
 
-    public Claims extractClaims(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String login = claims.getSubject();
-        String role = claims.get("role", String.class);
 
-        return claims;
 
-    }
+        log.info(request.getMethod());
+        log.info(request.getRequestURI());
+        log.info(request.getHeader("Authorization"));
 
-    public void validateActiveUser(String token) {
 
-        Claims claims = extractClaims(token);
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            logger.info("success Bogdanchick now token ->" + authHeader);
+            String token = authHeader.substring(7);
 
-        String login = claims.getSubject();
+            System.out.println("Token validdd" + jwtService.isTokenValid(token));
 
-        UserEntity user = userRepository.findByLogin(login);
+            if (jwtService.isTokenValid(token)) {
 
-        if (user != null) {
-            System.out.println("DB login = " + user.getLogin());
-            System.out.println("Active = " + user.getIsActive());
+                Claims claims = jwtService.extractClaims(token);
+
+                String role = claims.get("role", String.class);
+
+                String email = claims.getSubject();
+
+
+
+
+                var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                var authToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+
         }
+        filterChain.doFilter(request, response);
 
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
-        }
-
-        if (!Boolean.TRUE.equals(user.getIsActive())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is inactive");
-        }
-
+        log.info("status = {}", response.getStatus());
     }
 
-    public Role authentificate(String authHeader) {
-        String token = authHeader.replace("Bearer", "");
-        validateActiveUser(token);
-        return Rolecheck(token);
-    }
 
-    public Role Rolecheck(String token) {
-        Claims claims = extractClaims(token);
-        String roleStr = claims.get("role", String.class);
-        return Role.fromString(roleStr);
-    }
 }
 
 
