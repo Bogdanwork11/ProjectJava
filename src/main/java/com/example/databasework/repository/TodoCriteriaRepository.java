@@ -1,7 +1,7 @@
 package com.example.databasework.repository;
 
 
-import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.entity.Todo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -17,13 +17,13 @@ public class TodoCriteriaRepository {
     @Autowired
     private EntityManager entityManager;
 
-    public List<TodoEntity> findByAuthorIdOrderByCreatedAt(Integer authorId) {
+    public List<Todo> findByAuthorIdOrderByCreatedAt(Integer authorId) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        CriteriaQuery<TodoEntity> query = criteriaBuilder.createQuery(TodoEntity.class);
+        CriteriaQuery<Todo> query = criteriaBuilder.createQuery(Todo.class);
 
-        Root<TodoEntity> root = query.from(TodoEntity.class);
+        Root<Todo> root = query.from(Todo.class);
 
         Predicate authorPredicate = criteriaBuilder.equal(root.get("author").get("id"), authorId);
 
