@@ -1,6 +1,6 @@
 package com.example.databasework.service;
 
-import com.example.databasework.entity.StatusEntity;
+import com.example.databasework.entity.Status;
 import com.example.databasework.repository.StatusRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -17,10 +17,10 @@ public class StatusService {
     @EventListener(ApplicationReadyEvent.class)
     public void loadstatus() {
 
-        StatusEntity status1 = new StatusEntity();
+        Status status1 = new Status();
         status1.setStatus(true);
 
-        StatusEntity status2 = new StatusEntity();
+        Status status2 = new Status();
         status2.setStatus(false);
 
         statusRepository.save(status1);

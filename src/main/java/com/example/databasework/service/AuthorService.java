@@ -1,6 +1,6 @@
 package com.example.databasework.service;
 
-import com.example.databasework.entity.AuthorEntity;
+import com.example.databasework.entity.Authors;
 import com.example.databasework.repository.AuthorRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,10 +16,10 @@ public class AuthorService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadauthors() {
-        AuthorEntity author1 = new AuthorEntity();
+        Authors author1 = new Authors();
         author1.setAuthor("Bogdan");
 
-        AuthorEntity author2 = new AuthorEntity();
+        Authors author2 = new Authors();
         author2.setAuthor("David");
 
         authorRepository.save(author1);

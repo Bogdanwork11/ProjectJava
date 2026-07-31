@@ -1,26 +1,24 @@
 package com.example.databasework.service;
 
-import com.example.databasework.Role;
 import com.example.databasework.dto.MainDto;
-import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.entity.Todo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
 
 public interface TodoService {
 
-    List<TodoEntity> getAllTodos(Role role);
+    List<Todo> getAllTodos();
 
-    ResponseEntity<?> addinTodos(Role role, MainDto newTodo);
+    ResponseEntity<?> addinTodos(MainDto newTodo);
 
-    ResponseEntity<?> deleteTodo(Role role, int id);
+    ResponseEntity<?> deleteTodo(int id);
 
-    ResponseEntity<?> updateTodo(Role role, MainDto updateData, int id);
+    ResponseEntity<?> updateTodo(MainDto updateData, int id);
 
-    List<TodoEntity> getIdTodo(Integer authorId, Role role);
+    List<Todo> getIdTodo(Integer authorId);
 
-    List<TodoEntity> getIdTodoCriteria(Integer authorId, Role role);
+    List<Todo> getIdTodoCriteria(Integer authorId);
 
-    String oauth(OAuth2User user);
+
 }

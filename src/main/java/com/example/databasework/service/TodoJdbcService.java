@@ -1,20 +1,12 @@
 package com.example.databasework.service;
 
-import com.example.databasework.Role;
 import com.example.databasework.dto.MainDto;
-
-import com.example.databasework.entity.TodoEntity;
-
-
-import org.springframework.context.annotation.Primary;
+import com.example.databasework.entity.Todo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-
 import java.time.Instant;
-import java.util.ArrayList;
-
 import java.util.List;
 
 //Primary
@@ -30,38 +22,28 @@ public class TodoJdbcService implements TodoService {
 
     //GET
     @Override
-    public List<TodoEntity> getAllTodos(Role role) {
+    public List<Todo> getAllTodos() {
 
         String sql = """
                 SELECT * FROM TODO_VIEW
                 """;
-
-        if (role == Role.ADMIN) {
             return jdbcTemplate.query(sql, new TodoRowMapper());
+
+
         }
 
-
-        if (role == Role.USER) {
-            return jdbcTemplate.query(sql, new TodoRowMapper());
-        }
-
-        return List.of();
-    }
 
     //POST
     @Override
-    public ResponseEntity<?> addinTodos(Role role, MainDto newTodo) {
-        if (role == Role.ADMIN) {
+    public ResponseEntity<?> addinTodos( MainDto newTodo) {
 
             String sql = """
 
-                        INSERT INTO TODO_ENTITY
+                        INSERT INTO TODO
                     (CREATED_AT, UPDATED_AT, TEXT, STATUS_ID, IS_VISIBLE, AUTHOR_ID)
                     VALUES (?, ?, ?, ?, ?, ?)
 
                     """;
-//            System.out.println(newTodo.statusId + "Это statusId");
-//            System.out.println(newTodo.authorId + "Это authorId");
 
 
             jdbcTemplate.update(
@@ -80,37 +62,26 @@ public class TodoJdbcService implements TodoService {
             return ResponseEntity.ok("Ваша todoshка добавлена");
 
         }
-        if (role == Role.USER) {
-            return ResponseEntity.status(403)
-                    .body("Ты что тут делаешь юзер, только админ может добавлять пользователей");
-        }
-        return ResponseEntity.status(403).build();
-    }
+
 
     //DELETE
-    public ResponseEntity<?> deleteTodo(Role role, int id) {
-        if (role == Role.ADMIN) {
+    @Override
+    public ResponseEntity<?> deleteTodo(int id) {
             String sql = """
-                    DELETE FROM TODO_ENTITY
+                    DELETE FROM TODO
                     WHERE ID = ?
                     """;
             jdbcTemplate.update(sql, id);
             return ResponseEntity.ok(id);
-        }
-        if (role == Role.USER) {
-            return ResponseEntity.status(403)
-                    .body("Ты что тут делаешь юзер, только админ может удалять пользователей");
-        }
 
-        return ResponseEntity.status(403).build();
     }
 
     //PATCH
     @Override
-    public ResponseEntity<?> updateTodo(Role role, MainDto updateData, int id) {
-        if (role == Role.ADMIN) {
+    public ResponseEntity<?> updateTodo( MainDto updateData, int id) {
+
             String sql = """
-                    UPDATE TODO_ENTITY
+                    UPDATE TODO
                     SET UPDATED_AT = ?,
                         TEXT = ?,
                         STATUS_ID = ?,
@@ -131,22 +102,15 @@ public class TodoJdbcService implements TodoService {
             return ResponseEntity.ok("Обновлено todo с id: " + id);
         }
 
-        if (role == Role.USER) {
-            return ResponseEntity.status(403)
-                    .body("Незя тебе быть здесь пользователь, это дело Админов");
-        }
-        return ResponseEntity.status(403).build();
 
-    }
 
     //get author id
-    public List<TodoEntity> getIdTodo(Integer id, Role role) {
-        if (role == Role.ADMIN) {
+    public List<Todo> getIdTodo(Integer id) {
             String sql = """
                     SELECT t.*, a.AUTHOR as AUTHOR_NAME, s.STATUS as STATUS_NAME
-                    FROM TODO_ENTITY t
-                    JOIN AUTHOR_ENTITY a ON t.AUTHOR_ID = a.ID
-                    JOIN STATUS_ENTITY s ON t.STATUS_ID = s.ID
+                    FROM TODO t
+                    JOIN AUTHOR a ON t.AUTHOR_ID = a.ID
+                    JOIN STATUS s ON t.STATUS_ID = s.ID
                     WHERE t.AUTHOR_ID = ?
                     ORDER BY CREATED_AT DESC;
                     """;
@@ -156,18 +120,14 @@ public class TodoJdbcService implements TodoService {
                     id
 
             );
-        }
-
-        return new ArrayList<>();
     }
 
-    public List<TodoEntity>getIdTodoCriteria(Integer id, Role role){
-        if (role == Role.ADMIN) {
+    public List<Todo>getIdTodoCriteria(Integer id){
             String sql = """
                     SELECT t.*, a.AUTHOR as AUTHOR_NAME, s.STATUS as STATUS_NAME
-                    FROM TODO_ENTITY t
-                    JOIN AUTHOR_ENTITY a ON t.AUTHOR_ID = a.ID
-                    JOIN STATUS_ENTITY s ON t.STATUS_ID = s.ID
+                    FROM TODO t
+                    JOIN AUTHOR a ON t.AUTHOR_ID = a.ID
+                    JOIN STATUS s ON t.STATUS_ID = s.ID
                     WHERE t.AUTHOR_ID = ?
                     ORDER BY CREATED_AT DESC;
                     """;
@@ -177,9 +137,6 @@ public class TodoJdbcService implements TodoService {
                     id
 
             );
-        }
-
-        return new ArrayList<>();
     }
 
 }

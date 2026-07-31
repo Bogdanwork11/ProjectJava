@@ -1,21 +1,21 @@
 package com.example.databasework.service;
 
-import com.example.databasework.entity.AuthorEntity;
-import com.example.databasework.entity.StatusEntity;
-import com.example.databasework.entity.TodoEntity;
+import com.example.databasework.entity.Authors;
+import com.example.databasework.entity.Status;
+import com.example.databasework.entity.Todo;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TodoRowMapper implements RowMapper<TodoEntity> {
+public class TodoRowMapper implements RowMapper<Todo> {
 
     @Override
-    public TodoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-        TodoEntity todo = new TodoEntity();
-        AuthorEntity author = new AuthorEntity();
-        StatusEntity status = new StatusEntity();
+        Todo todo = new Todo();
+        Authors author = new Authors();
+        Status status = new Status();
 
         todo.setId(rs.getInt("ID"));
         todo.setCreatedAt(rs.getTimestamp("Created_at").toInstant());
