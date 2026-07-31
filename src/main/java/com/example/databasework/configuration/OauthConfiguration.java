@@ -1,20 +1,16 @@
 package com.example.databasework.configuration;
 
 
-import com.example.databasework.filter.JwtAuthenticationFilter;
+import com.example.databasework.filter.JwtFilter;
 import com.example.databasework.service.JWTService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 //создание обьекта, который хранит в себе всю информацию, необходимую для подключения к google по протоколу oauth
@@ -52,8 +48,8 @@ public class OauthConfiguration {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JWTService jwtService) {
-        return new JwtAuthenticationFilter(jwtService);
+    public JwtFilter jwtFilter(JWTService jwtService) {
+        return new JwtFilter(jwtService);
     }
 
 
