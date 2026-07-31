@@ -1,7 +1,5 @@
 package com.example.databasework.dto;
 
-import java.time.Instant;
-
 public record MainDto(
     Integer id,
     Integer userId,
