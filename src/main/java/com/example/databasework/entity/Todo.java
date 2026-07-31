@@ -13,7 +13,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoEntity {
+public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,14 +29,14 @@ public class TodoEntity {
 
     @ManyToOne
     @JoinColumn(name = "STATUS_ID")
-    private StatusEntity status;
+    private Status status;
 
     @Column(name = "IS_VISIBLE")
     private Boolean is_visible;
 
     @ManyToOne
     @JoinColumn(name = "AUTHOR_ID")
-    private AuthorEntity author;}
+    private Authors author;}
 
 
 
