@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS TODO;
 DROP TABLE IF EXISTS USERS;
 
-CREATE TABLE USERS ( -- to remove entity suffix
+CREATE TABLE USERS ( -- to remove entity suffix/already done)
                              ID INT AUTO_INCREMENT PRIMARY KEY,
                              LOGIN VARCHAR(255) NOT NULL,
                              PASSWORD VARCHAR(255) NOT NULL,
