@@ -1,8 +1,9 @@
 package com.example.databasework.filter;
 
-import com.example.databasework.entity.User;
+import com.example.databasework.entity.Users;
 import com.example.databasework.repository.UserRepository;
 import com.example.databasework.service.JWTService;
+import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +18,14 @@ public class OAuthUserFilter {
         this.jwtService = jwtService;
     }
 
-    public String oauth(OAuth2User user) {
+    public String oauth(@NonNull OAuth2User user) {
         if (user == null) {
             return "Пользователь не авторизован";
         }
 
         String email = user.getAttribute("email");
 
-        User foundUser = userRepository.findByLogin(email);
+        Users foundUser = userRepository.findByLogin(email);
 
         if (foundUser == null) {
             return "Пользователь не найден";
