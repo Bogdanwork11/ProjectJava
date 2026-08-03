@@ -1,7 +1,7 @@
 package com.example.databasework.controller;
 
 import com.example.databasework.dto.LoginRequest;
-import com.example.databasework.entity.User;
+import com.example.databasework.entity.Users;
 import com.example.databasework.repository.UserRepository;
 import com.example.databasework.service.JWTService;
 
@@ -23,7 +23,7 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
 
-        User user = userRepository.findByLogin(request.login());
+        Users user = userRepository.findByLogin(request.login());
 
         if (user == null) {
             throw new RuntimeException("Пользователь не найден");
