@@ -9,10 +9,10 @@ SELECT
     t.CREATED_AT,
     t.UPDATED_AT,
     t.IS_VISIBLE,
-    a.AUTHOR AS AUTHOR_NAME,
+    a.AUTHORS AS AUTHOR_NAME,
     s.STATUS AS STATUS_NAME
-FROM TODO_ENTITY t
-         JOIN AUTHOR_ENTITY a
+FROM TODO t
+         JOIN AUTHORS a
               ON t.AUTHOR_ID = a.ID
-         JOIN STATUS_ENTITY s
+         JOIN STATUS s
               ON t.STATUS_ID = s.ID;
