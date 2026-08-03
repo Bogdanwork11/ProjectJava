@@ -1,6 +1,6 @@
 package com.example.databasework.service;
 
-import com.example.databasework.entity.User;
+import com.example.databasework.entity.Users;
 import com.example.databasework.repository.UserRepository;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -17,16 +17,16 @@ public class UserService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadUsers() {
-        User admin = new User();
+        Users admin = new Users();
         admin.setId(1);
         admin.setLogin("Bogdankosyanenko@icloud.com");
         admin.setPassword("28085678");
         admin.setRole("ADMIN");
         admin.setIsActive(true);
 
-        User user = new User();
+        Users user = new Users();
         user.setId(2);
-        user.setLogin("David@gmail.com");
+        user.setLogin("emirmus69@gmail.com");
         user.setPassword("12345678");
         user.setRole("USER");
         user.setIsActive(false);
