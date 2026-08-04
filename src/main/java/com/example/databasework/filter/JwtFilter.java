@@ -81,7 +81,7 @@ public class JwtFilter extends OncePerRequestFilter { //todo to read about sprin
         System.out.println("Выведение после генерика токена = "
                 + SecurityContextHolder.getContext().getAuthentication());
 
-        System.out.println("STATUS = " + response.getStatus());
+
 
     }
 
