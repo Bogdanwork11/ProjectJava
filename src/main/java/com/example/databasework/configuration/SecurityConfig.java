@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -25,9 +27,28 @@ public class SecurityConfig {
                         .frameOptions(frame -> frame.sameOrigin())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/todos")
-//
+
+                        .requestMatchers(HttpMethod.GET, "/todos")
+                        .hasAnyRole("ADMIN", "USER")
+
+                        .requestMatchers(HttpMethod.POST, "/todos")
                         .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/todos/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PATCH, "/todos/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/todos/**")
+                        .hasAnyRole("ADMIN", "USER")
+
+                        .requestMatchers(HttpMethod.GET, "todos/criteria/**")
+                        .hasAnyRole("ADMIN", "USER")
+
+
+
+
                         .requestMatchers("/login/**", "/oauth2/**", "/h2-console/**").permitAll() //разрешен доступ без аунтмфикации, остальное с аунтификациями
                         .anyRequest().authenticated()
                 )

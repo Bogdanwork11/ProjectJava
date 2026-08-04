@@ -47,10 +47,7 @@ public class OauthConfiguration {
         );
     }
 
-    @Bean
-    public JwtFilter jwtFilter(JWTService jwtService) {
-        return new JwtFilter(jwtService);
-    }
+
 
 
 }
