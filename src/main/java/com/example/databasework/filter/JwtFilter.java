@@ -1,5 +1,7 @@
 package com.example.databasework.filter;
 
+import com.example.databasework.entity.Users;
+import com.example.databasework.repository.UserRepository;
 import com.example.databasework.service.JWTService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -20,9 +22,11 @@ import java.util.List;
 @Component
 public class JwtFilter extends OncePerRequestFilter { //todo to read about springboot filters
     private final JWTService jwtService;
+    private final UserRepository userRepository;
 
-    public JwtFilter(JWTService jwtService) {
+    public JwtFilter(JWTService jwtService, UserRepository userRepository) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -46,9 +50,17 @@ public class JwtFilter extends OncePerRequestFilter { //todo to read about sprin
 
                 Claims claims = jwtService.extractClaims(token);
 
-                String role = claims.get("role", String.class);
+
 
                 String email = claims.getSubject();
+
+                Users user = userRepository.findByLogin(email);
+
+                String role = user.getRole();
+
+//                String role = claims.get("role", String.class);
+
+
 
 
 
@@ -56,12 +68,21 @@ public class JwtFilter extends OncePerRequestFilter { //todo to read about sprin
                 var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
                 var authToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
 
         }
+
+        System.out.println("Выведение до генерика токена = "
+                + SecurityContextHolder.getContext().getAuthentication());
+
         filterChain.doFilter(request, response);
 
-        log.info("status = {}", response.getStatus());
+        System.out.println("Выведение после генерика токена = "
+                + SecurityContextHolder.getContext().getAuthentication());
+
+        System.out.println("STATUS = " + response.getStatus());
+
     }
 
 
