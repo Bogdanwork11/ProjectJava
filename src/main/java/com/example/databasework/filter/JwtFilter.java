@@ -2,6 +2,7 @@ package com.example.databasework.filter;
 
 import com.example.databasework.entity.Users;
 import com.example.databasework.repository.UserRepository;
+import com.example.databasework.role.Role;
 import com.example.databasework.service.JWTService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -31,16 +32,24 @@ public class JwtFilter extends OncePerRequestFilter { //todo to read about sprin
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-
-
         log.info(request.getMethod());
         log.info(request.getRequestURI());
         log.info(request.getHeader("Authorization"));
 
+        System.out.println("Authorization = " + request.getHeader("Authorization"));
+        System.out.println("Before = " + SecurityContextHolder.getContext().getAuthentication());
 
+        System.out.println("URI = " + request.getRequestURI());
+        System.out.println("METHOD = " + request.getMethod());
+        System.out.println("Authorization = " + request.getHeader("Authorization"));
+
+
+        long start = System.nanoTime();
         String authHeader = request.getHeader("Authorization");
+        System.out.println("URI = " + request.getRequestURI());
+        System.out.println("Authorization = " + request.getHeader("Authorization"));
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            System.out.println("JWT FOUND");
             logger.info("success Bogdanchick now token ->" + authHeader);
             String token = authHeader.substring(7);
 
@@ -51,36 +60,36 @@ public class JwtFilter extends OncePerRequestFilter { //todo to read about sprin
                 Claims claims = jwtService.extractClaims(token);
 
 
-
                 String email = claims.getSubject();
 
-                Users user = userRepository.findByLogin(email);
+                Users user = userRepository.findByEmail(email);
 
-                String role = user.getRole();
-
-//                String role = claims.get("role", String.class);
-
-
-
-
+                Role role = jwtService.extractRole(token);
+                System.out.println("ROLE = " + role);
+                System.out.println(role.description());
 
 
                 var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
                 var authToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println(SecurityContextHolder.getContext().getAuthentication());
 
             }
 
         }
 
-        System.out.println("Выведение до генерика токена = "
+        System.out.println("BEFORE filterChain = "
                 + SecurityContextHolder.getContext().getAuthentication());
 
         filterChain.doFilter(request, response);
 
-        System.out.println("Выведение после генерика токена = "
+        System.out.println("AFTER filterChain = "
+                + SecurityContextHolder.getContext().getAuthentication());
+        System.out.println("After setAuthentication = "
                 + SecurityContextHolder.getContext().getAuthentication());
 
+        long duration = System.nanoTime() - start;
+        log.info("JWT Filter time: {} ns", duration);
 
 
     }
