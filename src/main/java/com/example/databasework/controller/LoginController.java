@@ -23,7 +23,7 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
 
-        Users user = userRepository.findByLogin(request.login());
+        Users user = userRepository.findByEmail(request.login());
 
         if (user == null) {
             throw new RuntimeException("Пользователь не найден");
@@ -32,10 +32,10 @@ public class LoginController {
         if (!user.getPassword().equals(request.password())) {
             throw new RuntimeException("Не вернвй пароль");
         }
-        String token = jwtService.generateToken(user.getLogin(), user.getRole());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole());
         System.out.println("Токен: " + token);
 
-        return jwtService.generateToken(user.getLogin(), user.getRole());
+        return jwtService.generateToken(user.getEmail(), user.getRole());
     }
 
 }
