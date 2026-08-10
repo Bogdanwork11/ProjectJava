@@ -1,5 +1,6 @@
 package com.example.databasework.service;
 
+import com.example.databasework.role.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,9 +19,9 @@ public class JWTService {
     private String secret;
 
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, Role role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
+        claims.put("role", role.name());
 
         return createToken(claims, username);
 
@@ -44,6 +45,11 @@ public class JWTService {
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Role extractRole(String token) {
+        String role = extractClaims(token).get("role", String.class);
+        return Role.fromString(role);
     }
 
 
