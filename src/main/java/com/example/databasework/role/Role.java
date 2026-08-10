@@ -1,19 +1,25 @@
-package com.example.databasework;
+package com.example.databasework.role;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 public enum Role {
-    ADMIN,
-    USER;
+    ADMIN("Администратор ⭐"),
+    USER("Пользователь ★");
 
-    public static Role fromString(String roleStr){
-        if (roleStr == null){
-            System.out.println("Роль не может быть null");
+    private final String description;
+
+    Role(String description) {
+        this.description = description;
+    }
+
+    public String description() {
+        return description;
+    }
+
+    public static Role fromString(String value){
+        if(value == null) {
+            throw new RuntimeException("Роль пуста");
         }
-        return Role.valueOf(roleStr.toUpperCase());
-        @Enumerated(EnumType.STRING)
-        private Role role;
+        return Role.valueOf(value.toUpperCase());
     }
 
 }
