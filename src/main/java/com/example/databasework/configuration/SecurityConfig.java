@@ -38,7 +38,6 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
 
-
                         .requestMatchers(HttpMethod.GET, "/api/use/me")
                         .hasAnyRole("ADMIN", "USER")
 
@@ -77,7 +76,7 @@ public class SecurityConfig {
 
                             response.sendError(
                                     HttpServletResponse.SC_UNAUTHORIZED,
-                                    "JWT token required"
+                                    "Ожидается токен"
                             );
                         })
 
