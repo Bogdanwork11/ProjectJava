@@ -61,37 +61,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                .exceptionHandling(ex -> ex
-
-                        .authenticationEntryPoint((request, response, e) -> {
-
-                            System.out.println("ошибка 401");
-                            System.out.println("uri = " + request.getRequestURI());
-                            System.out.println("метод = " + request.getMethod());
-                            System.out.println("authorization = " +
-                                    SecurityContextHolder.getContext().getAuthentication());
-
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    "Ожидается токен"
-                            );
-                        })
-
-                        .accessDeniedHandler((request, response, e) -> {
-
-                            System.out.println("ошибка 403");
-                            System.out.println("uri = " + request.getRequestURI());
-                            System.out.println("метод = " + request.getMethod());
-                            System.out.println("authorization = " +
-                                    SecurityContextHolder.getContext().getAuthentication());
-
-                            response.sendError(
-                                    HttpServletResponse.SC_FORBIDDEN,
-                                    "Ожидается роль пользователя"
-                            );
-                        })
-                )
-
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .oauth2Login(oauth -> oauth
