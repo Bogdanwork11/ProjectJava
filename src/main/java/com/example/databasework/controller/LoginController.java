@@ -25,10 +25,6 @@ public class LoginController {
 
         Users user = userRepository.findByEmail(request.login());
 
-        if (user == null) {
-            throw new RuntimeException("Пользователь не найден");
-        }
-
         if (!user.getPassword().equals(request.password())) {
             throw new RuntimeException("Не вернвй пароль");
         }
