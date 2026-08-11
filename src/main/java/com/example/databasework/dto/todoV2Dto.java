@@ -1,7 +1,5 @@
 package com.example.databasework.dto;
 
-import org.w3c.dom.Text;
-
 import java.time.Instant;
 
 public record todoV2Dto(
