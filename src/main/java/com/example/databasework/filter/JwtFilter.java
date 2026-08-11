@@ -72,25 +72,13 @@ public class JwtFilter extends OncePerRequestFilter { //todo to read about sprin
                 var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
                 var authToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                System.out.println(SecurityContextHolder.getContext().getAuthentication());
+
 
             }
 
         }
 
-        System.out.println("BEFORE filterChain = "
-                + SecurityContextHolder.getContext().getAuthentication());
-
         filterChain.doFilter(request, response);
-
-        System.out.println("AFTER filterChain = "
-                + SecurityContextHolder.getContext().getAuthentication());
-        System.out.println("After setAuthentication = "
-                + SecurityContextHolder.getContext().getAuthentication());
-
-        long duration = System.nanoTime() - start;
-        log.info("JWT Filter time: {} ns", duration);
-
 
     }
 
