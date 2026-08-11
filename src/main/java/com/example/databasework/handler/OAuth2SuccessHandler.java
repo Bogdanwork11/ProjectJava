@@ -48,7 +48,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         if (user == null) {
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
-                    "Пользователя нету в локальной бдшке"
+                    "Пользователя нет в локальной бдшке"
             );
             return;
         }
